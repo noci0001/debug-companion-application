@@ -1,0 +1,157 @@
+
+=> If you are having issues with reopening the project in a DevContainer e.g. "Is Docker deamon not running"
+	you can try fixing this initial issue by opening VSCode with sudo rights.
+	To acheive this, close your VSCode window and run this command in the terminal:
+
+	```
+	sudo code --user-data-dir="~/.vscode-root"
+	```
+
+
+=> If the DevContainer fails to open, make sure that docker and docker-desktop is installed correctly and running, with the following commands:
+
+	```
+	docker --version
+	sudo systemctl status docker
+	docker run hello-world
+	```
+
+=> If the problems persist, you might have a misconfiguration of your Docker.
+
+	You might also be in the wrong Docker context, in order to debug, list them:
+
+	```
+	docker context list
+	```
+
+	If you see multiple, try switching to them (try switching to the default one)
+	Example:
+	```
+	docker context use default
+	```
+
+	Once you have switched to a different context, try reopening in DevContainer.
+
+
+=> If nothing works, you can try purging and reinstalling the entire Docker:
+
+	```
+	sudo apt-get purge docker-ce docker-ce-cli containerd.io
+	sudo rm -rf /etc/docker/ /var/lib/docker/
+	```
+
+	To avoid conflicts during the reinstallation, remove Docker repositories:
+
+	```
+	sudo rm /etc/apt/sources.list.d/docker.list
+	sudo apt-get update
+	```
+
+	Install Docker CLI:
+
+	```
+	sudo apt-get update
+	sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+	sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+	sudo apt-get update
+	sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+	sudo systemctl start docker
+	sudo systemctl enable docker
+	```
+
+	Now it's time for Docker Desktop:
+
+	Download latest Docker Desktop .deb package
+	Open it in the terminal and run:
+	```
+	sudo dpkg -i <docker-desktop>.deb
+	```
+
+	Final check to see if everything was reinstalled correctly:
+
+	```
+	docker --version
+	sudo systemctl status docker
+	docker run hello-world
+	```
+
+[?] After running the Pre Commit Action it is unclear if git commit is needed to be ran before pushing. Currently, there are some critical files that are untracked and others that require a commit.
+
+
+=> During the process of Publishing the Release, make sure to add a meaningful tag or you will be blocked by the following error: 
+
+	> There was an error creating your Release: tag name can't be blank, tag name is not well-formed, published releases must have a valid tag.
+
+
+=> If any of the workflow (CI, Multiarch, Release) fail there is likely a misconfiguration of the permissions in your github repo.
+	Firstly, make sure that the repo is private.
+	Once you have excluded that problem, you can go to your GitHub settings, tokens and then inspect the token assigned to this repo.
+	Retry the run the workflow. If it still is not wokring 
+
+PROBLEMS:
+
+In this page:
+https://sdv-blueprints.eclipse.dev/docs/companion-application/deploy-seat-adjuster
+At this section: Add manifest for seat adjuster
+There is the following instruction:
+	As an alternative to using kanto-cm, you can add a container manifest to the directoy watched by the kanto-auto-deployer (data/var/containers/manifests).
+
+I am unsure how to access that directory as it is not present inside Leda.
+
+
+The alternative provided is using the following kanto-cm to start the container
+
+kanto-cm create \
+    --name seatadjuster-app \
+    --e="SDV_SEATSERVICE_ADDRESS=grpc://seatservice-example:50051" \
+    --e="SDV_MQTT_ADDRESS=mqtt://mosquitto:1883" \
+    --e="SDV_VEHICLEDATABROKER_ADDRESS=grpc://databroker:55555" \
+    --e="SDV_MIDDLEWARE_TYPE=native" \
+    --hosts="databroker:container_databroker-host, mosquitto:host_ip, seatservice-example:container_seatservice-example-host" \
+    ghcr.io/<YOUR_ORG>/seat-adjuster-app:latest
+
+kanto-cm start --name seatadjuster-app
+kanto-cm logs --name seatadjuster-app
+
+It is unclear to me how I can pull the correct container. Specifically, I don't understand what to fill into <YOUR_ORG>. Also, should this be run inside Leda?
+
+IMPORTANT PROBLEM: there seems to be a wrongful parsing of the lines where the above command to create a container parses each line like a separate command. Furthermore, the naming convention of 'seat-adjuster-app' should be clarified as being a placeholder name and should reflect instead the name of the template created in the very first steps.
+
+
+
+
+
+
+NOTES:
+
+At this page: https://eclipse-leda.github.io/leda/docs/general-usage/linux-setup/ Pre-Requisites is mispelled.
+
+In the same page, at point 3. Dowload the Debian packages from the Eclipse Leda Utilities release page ->
+Consider substituting the the commands with the addition of sudo like so:
+
+sudo wget "https://github.com/eclipse-leda/leda-utils/releases/download/v0.0.2/eclipse-leda-utils_0.0.2.0.00680_all.deb"
+sudo apt-get install -y ./eclipse-leda-utils_0.0.2.0.00680_all.deb
+command -v sdv-health
+
+sudo wget "https://github.com/eclipse-leda/leda-utils/releases/download/v0.0.2/eclipse-leda-kantui_0.0.2.0.00680_amd64.deb"
+sudo apt-get install -y ./eclipse-leda-kantui_0.0.2.0.00680_amd64.deb
+command -v kantui
+
+sudo wget "https://github.com/eclipse-leda/leda-utils/releases/download/v0.0.2/eclipse-leda-kanto-auto-deployer_0.0.2.0.00680_amd64.deb"
+sudo apt-get install -y ./eclipse-leda-kanto-auto-deployer_0.0.2.0.00680_amd64.deb
+command -v kanto-auto-deployer
+
+Same for point 4. ->
+
+sudo wget "https://github.com/eclipse-leda/meta-leda/releases/download/0.1.0-M2/eclipse-leda-containers_0.1.0.2.0.422_all.deb"
+sudo apt-get install -y ./eclipse-leda-containers_0.1.0.2.0.422_all.deb
+
+
+OTHER PROBLEM:
+
+	1) DevContainer fails to open
+	2) in import-example-app.sh e.g. at line 18 the script uses python which is a command not found (earliest version I can install is python2)
+
+
+If the dev-container fails, make sure to possess docker desktop installed in your system
