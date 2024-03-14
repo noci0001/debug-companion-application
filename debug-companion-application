@@ -13,17 +13,9 @@
 
 	3.Test the deployed setup by interacting with the seat adjuster to change the seat position.
 
-		
-
-
-Run Eclipse Leda, for example, as container or with other options like QEMU, physical hardware, etc..
-
-Manage the Eclipse Kanto container runtime to deploy your seat adjuster application.
-
-Test the deployed setup by interacting with the seat adjuster to change the seat position.
 
 [?] There are too many links to other pages e.g. Run leda AS CONTAINER or .... => this could be refactored to => 
-	2. Run Eclipse Leda as a container (quickest way). For other options like QEMU, physical hardware, etc.. find out more at this link: https://eclipse-leda.github.io/leda/docs/general-usage/
+	2. Run Eclipse Leda with QEMU (recommended). For other options like Linux, physical hardware, etc.. find out more at this link: https://eclipse-leda.github.io/leda/docs/general-usage/
 
 
 ** DOCKER & DEVCONTAINERS TROUBLESHOOTING **
@@ -122,6 +114,11 @@ Test the deployed setup by interacting with the seat adjuster to change the seat
 => Please make sure to wait 10 seconds after pressing "r" in order to remove the container.
 	NOTE: R from <[R]emove> is actually lower-case r
 
+=>IMPORTANT: if you are getting a 401 Unauthorized error you must first navigate to Code -> Package -> Package Settings
+	Scroll to the bottom and within the Danger Zone change the visibility if it is set to private to public. 
+	kanto-cm create will now correctly create the container from your application.
+
+
 PROBLEMS:
 
 Numbering and layout should be clearer. Example: the high level steps 1 to 4 are helpful but they seem to separated to the succeeding section where instead they are the expansion of each section.
@@ -142,9 +139,6 @@ I am unsure how to access that directory as it is not present inside Leda.
 
 	ghcr.io/noci0001/my-seat-adjuster/seatadjuster:1
 
-	IMPORTANT: if you are getting a 401 Unauthorized error you must first navigate to Code -> Package -> Package Settings
-	Scroll to the bottom and within the Danger Zone change the visibility if it is set to private to public. 
-	kanto-cm create will now correctly create the container from your application.
 
 
 [?] In "Add manifest for seat-adjuster" it's written:
@@ -154,7 +148,7 @@ I am unsure how to access that directory as it is not present inside Leda.
 
 
 [?] "Add Container Manifest Prodecure"
-	"In the next steps we will write in total 3 files (seat-application.json, mockservice.json, mock.py) inside 2 important directories: /data/var/containers/manifest/ and /data/var/mock .
+	In the next steps we will write in total 3 files (seat-application.json, mockservice.json, mock.py) inside 2 important directories: /data/var/containers/manifest/ and /data/var/mock .
 	Before continuing with this guide, make sure to be in the right directory, run:
 	```
 	cd ~/../..
@@ -165,7 +159,6 @@ I am unsure how to access that directory as it is not present inside Leda.
 	touch ~/../../data/var/mock/mock.py
 	```
 	If you don't, you will be reminded later.
-	"
 
 
 IMPORTANT PROBLEM: there seems to be a wrongful parsing of the lines where the above command to create a container parses each line like a separate command. Furthermore, the naming convention of 'seat-adjuster-app' should be clarified as being a placeholder name and should reflect instead the name of the template created in the very first steps.
@@ -175,39 +168,3 @@ IMPORTANT PROBLEM: there seems to be a wrongful parsing of the lines where the a
 
 		kanto-cm start --name seatadjuster-app
 		kanto-cm logs --name seatadjuster-app
-
-
-
-
-NOTES:
-
-	At this page: https://eclipse-leda.github.io/leda/docs/general-usage/linux-setup/ Pre-Requisites is mispelled.
-
-	In the same page, at point 3. Dowload the Debian packages from the Eclipse Leda Utilities release page ->
-	Consider substituting the the commands with the addition of sudo like so:
-
-	sudo wget "https://github.com/eclipse-leda/leda-utils/releases/download/v0.0.2/eclipse-leda-utils_0.0.2.0.00680_all.deb"
-	sudo apt-get install -y ./eclipse-leda-utils_0.0.2.0.00680_all.deb
-	command -v sdv-health
-
-	sudo wget "https://github.com/eclipse-leda/leda-utils/releases/download/v0.0.2/eclipse-leda-kantui_0.0.2.0.00680_amd64.deb"
-	sudo apt-get install -y ./eclipse-leda-kantui_0.0.2.0.00680_amd64.deb
-	command -v kantui
-
-	sudo wget "https://github.com/eclipse-leda/leda-utils/releases/download/v0.0.2/eclipse-leda-kanto-auto-deployer_0.0.2.0.00680_amd64.deb"
-	sudo apt-get install -y ./eclipse-leda-kanto-auto-deployer_0.0.2.0.00680_amd64.deb
-	command -v kanto-auto-deployer
-
-	Same for point 4. ->
-
-		sudo wget "https://github.com/eclipse-leda/meta-leda/releases/download/0.1.0-M2/eclipse-leda-containers_0.1.0.2.0.422_all.deb"
-		sudo apt-get install -y ./eclipse-leda-containers_0.1.0.2.0.422_all.deb
-
-
-OTHER PROBLEM:
-
-	1) DevContainer fails to open
-	2) in import-example-app.sh e.g. at line 18 the script uses python which is a command not found (earliest version I can install is python2)
-
-
-	If the dev-container fails, make sure to possess docker desktop installed in your system
