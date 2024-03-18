@@ -1,0 +1,97 @@
+Only in revised-companion-application: companion-app-screenshots
+diff original-companion-application/deploy-seat-adjuster.md revised-companion-application/deploy-seat-adjuster.md
+27a28,39
+> ## Note about system file structure:
+> > In the next steps we will write in total 3 files (seat-application.json, mockservice.json, mock.py) inside 2 important directories: /data/var/containers/manifest/ and /data/var/mock > Before continuing with this guide, make sure to be in the right directory, run:
+> ```
+> cd ~/../..
+> ```
+> > If you want, you can already create the mock directories that will constitute the python script to run mockservice:
+> ```
+> mkdir ~/../../data/var/mock/
+> touch ~/../../data/var/mock/mock.py
+> ```
+> > If you don't, you will be reminded later.
+> 
+47a60,61
+> > If uppercase `R` does not work, try with lowercase `r` and make sure to wait about 10 seconds for the container to be disabled. 
+> 
+64a79
+>  
+73c88,101
+<     ghcr.io/<YOUR_ORG>/seat-adjuster-app:latest
+---
+>     ghcr.io/<YOUR_ORG>/<CONTAINER_IMAGE>:<TAG>
+> 
+> kanto-cm start --name seatadjuster-app
+> kanto-cm logs --name seatadjuster-app
+> ```
+> 
+> > Replace <YOUR_ORG> with your username
+> > Replace <CONTAINER_IMAGE> with your container image which you can find in Code > Packages. If you can't find it likely means that the workflow has failed (CI, MultiArch or Release)
+> 
+> This command might not work as is it multiline.
+> To solve this, try running each command as one-liner:
+> 
+> ```bash
+> kanto-cm create --name seatadjuster-app --e="SDV_SEATSERVICE_ADDRESS=grpc://seatservice-example:50051" --e="SDV_MQTT_ADDRESS=mqtt://mosquitto:1883" --e="SDV_VEHICLEDATABROKER_ADDRESS=grpc://databroker:55555" --e="SDV_MIDDLEWARE_TYPE=native" --hosts="databroker:container_databroker-host, mosquitto:host_ip, seatservice-example:container_seatservice-example-host" ghcr.io/<YOUR_ORG>/<CONTAINER_IMAGE>:<tag>
+diff original-companion-application/develop-seat-adjuster.md revised-companion-application/develop-seat-adjuster.md
+3,15d2
+< The following pages show how to execute the explained setup using Eclipse Velocitas and Eclipse Leda 0.1.0-M2:
+< 
+< On a high level, you need to perform the following steps described in more detail in this guide:
+< 
+< 1. Use the Eclipse Velocitas template repository to develop, build and deploy your
+< version of the [seat adjuster example](https://github.com/eclipse-velocitas/vehicle-app-python-sdk/tree/main/examples/seat-adjuster).
+< 
+< 2. Run Eclipse Leda, for example, [as container](https://eclipse-leda.github.io/leda/docs/general-usage/docker-setup/) or with other options like [QEMU, physical hardware, etc.](https://eclipse-leda.github.io/leda/docs/general-usage/).
+< 
+< 3. [Manage the Eclipse Kanto container runtime](./deploy-seat-adjuster.md) to deploy your seat adjuster application.
+< 
+< 4. [Test the deployed setup](./interact-seat-adjuster.md) by interacting with the seat adjuster to change the seat position.
+< 
+146a134
+> ![velocitas exec runtime-local up](./companion-app-screenshots/1_velocitas_exec_runtime.png)
+155a144
+> ![Cloud Icon](./companion-app-screenshots/2_mqtt_cloud_icon(edited).png)
+161a151,153
+> 
+> ![publish_with_mosquitto](./companion-app-screenshots/3_publish_with_mosquitto_local.png)
+> 
+172a165
+> ![velocitas exec runtime-kanto up](./companion-app-screenshots/4_runtime_kanto_up.png)
+207a201,202
+> ![pre_commit_action](./companion-app-screenshots/5_pre_commit_action.png)
+> 
+212a208,211
+> ![CI_workflow](./companion-app-screenshots/pre_commit_action_CI_workflow.png)
+> 
+> ![MULTIARCH](./companion-app-screenshots/pre_commit_build_multiarch.png)
+> 
+216a216,218
+> 
+> ![release](./companion-app-screenshots/6_where_release.png)
+> 
+219c221,223
+< Then you can `Draft a new release`, create a new tag and title for the release, and click `Publish Release`, which triggers the `Release workflow`.
+---
+> Then you can `Draft a new release`, make sure to create a new tag and title for the release, and click `Publish Release`, which triggers the `Release workflow`.
+> 
+> ![pre_release_plus_tag](./companion-app-screenshots/8_pre_release_plus_tag.png)
+Only in revised-companion-application: getting-started.md
+Common subdirectories: original-companion-application/.git and revised-companion-application/.git
+Common subdirectories: original-companion-application/img and revised-companion-application/img
+diff original-companion-application/interact-seat-adjuster.md revised-companion-application/interact-seat-adjuster.md
+18a19,20
+> ![ssh-connecting](./companion-app-screenshots/9_connecting_with_ssh.png)
+> 
+diff original-companion-application/Readme.md revised-companion-application/Readme.md
+25,27c25,27
+< In the following paragraphs, we next introduce the [architecture and the assumed data flow](./architecture-seat-adjuster.md)
+< before we explain the [development](./develop-seat-adjuster.md) and [deployment](./deploy-seat-adjuster.md) steps.
+< If you are more interested in the general development steps, you may directly jump to the [develop seat adjuster](./develop-seat-adjuster.md).
+---
+> In the following paragraphs, we introduce the [architecture and the assumed data flow](https://sdv-blueprints.eclipse.dev/docs/companion-application/architecture-seat-adjuster)
+> before we explain the [development](https://sdv-blueprints.eclipse.dev/docs/companion-application/develop-seat-adjuster) and [deployment](https://sdv-blueprints.eclipse.dev/docs/companion-application/deploy-seat-adjuster) steps.
+> If you are more interested in the general development steps, you may directly jump to the [develop seat adjuster](https://sdv-blueprints.eclipse.dev/docs/companion-application/develop-seat-adjuster).
+Only in revised-companion-application: troubleshooting.md
