@@ -1,4 +1,4 @@
-- SSeat Adjuster
+- Seat Adjuster
    - developed in DevContainer
    - import example app from SDK
    - Start runtime to test and debug:
